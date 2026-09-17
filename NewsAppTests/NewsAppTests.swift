@@ -30,4 +30,26 @@ final class NewsAppTests: XCTestCase {
         let news = newsViewModel?.getNews(for: 0)
         XCTAssertNil(news)
     }
+    
+    func testFetchNews() {
+        // Given
+        let expectation = XCTestExpectation(description: "Fetch news completes")
+        
+        // When
+        newsViewModel?.fetchNews {
+            expectation.fulfill()
+        }
+        
+        // Then
+        wait(for: [expectation], timeout: 1.0)
+        
+        // Verify count
+        XCTAssertEqual(newsViewModel?.getTotalNewsCount(), 1)
+        
+        // Verify specific article data
+        let article = newsViewModel?.getNews(for: 0)
+        XCTAssertNotNil(article)
+        XCTAssertEqual(article?.title, "Tesla: The Top Is Here")
+        XCTAssertEqual(article?.publishedAt, "2020-02-05T15:47:40Z")
+    }
 }
